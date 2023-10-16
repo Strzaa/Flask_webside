@@ -17,20 +17,33 @@ def add_link(link, ip):
 
     workbook.save("./exel/links.xlsx")
 
+def check_login(username, password):
+    workbook = openpyxl.load_workbook('./exel/goscie.xlsx')
+    sheet = workbook.active
+
+    for row in sheet.iter_rows(min_row=1, values_only=True):
+        if row[0] == username and row[1] == password:
+            return True
+
+    return False
+
 app = Flask(__name__, template_folder='templates')
 
-#@app.route("/")
-#def init():
-#    return 
+@app.route('/')
+def init():
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please try again.'
-        else:
+        username = request.form['username']
+        password = request.form['password']        
+        
+        if check_login(username, password):
             return redirect(url_for('sending'))
+        else:
+            error = 'Invalid Credentials. Please try again.'
     return render_template('login.html', error=error)
 
 @app.route("/send", methods=["GET", "POST"])
