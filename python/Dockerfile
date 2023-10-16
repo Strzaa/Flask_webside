@@ -6,7 +6,7 @@ ENV FLASK_RUN_PORT=5000
 
 COPY . .
 
-WORKDIR ./app
+WORKDIR /app
 
 RUN pip install -r requirements.txt
 
