@@ -30,7 +30,7 @@ def login():
         if request.form['username'] != 'admin' or request.form['password'] != 'admin':
             error = 'Invalid Credentials. Please try again.'
         else:
-            return redirect(url_for('/send'))
+            return redirect(url_for('sending'))
     return render_template('login.html', error=error)
 
 @app.route("/send", methods=["GET", "POST"])

@@ -3,7 +3,7 @@
 #start and clean
 docker compose down
 
-rm -y ./python/exel/links.xlsx
+rm -f ./python/exel/links.xlsx
 
 docker compose build
 
