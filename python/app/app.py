@@ -17,13 +17,28 @@ def add_link(link, ip, user):
 
     workbook.save("./exel/links.xlsx")
 
-def check_login(username, password):
     workbook = openpyxl.load_workbook('./exel/goscie.xlsx')
     sheet = workbook.active
 
     for row in sheet.iter_rows(min_row=2, values_only=True):
+        if row[0] == user:
+            #dont know here
+            sheet.cell()
+
+    workbook.save("./exel/goscie.xlsx")
+
+def check_login(username, password=None):
+    workbook = openpyxl.load_workbook('./exel/goscie.xlsx')
+    sheet = workbook.active
+
+    if password is None:
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            if row[0] == username:
+                return str(row[2])
+
+    for row in sheet.iter_rows(min_row=2, values_only=True):
         if row[0] == username and row[1] == password:
-            return True
+            return str(row[2])
 
     return False
 
@@ -40,14 +55,23 @@ def login():
         username = request.form['username']
         password = request.form['password']        
         
-        if check_login(username, password):
-            return redirect(url_for('sending', user=username))
+        sended = check_login(username, password)
+
+        if sended != False:
+            if sended == "No":
+                return redirect(url_for('sending', user=username))
+            else:
+                return render_template("done.html")
         else:
             error = 'Invalid Credentials. Please try again.'
     return render_template('login.html', error=error)
 
 @app.route("/send/<user>", methods=["GET", "POST"])
 def sending(user):
+    if request.method == "GET":
+        if check_login(user) == "Yes":
+               return render_template("done.html")
+
     if request.method == "POST":
         link = request.form.get("link")
         ip_adress = request.remote_addr
