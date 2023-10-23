@@ -1,30 +1,45 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, url_for
 import openpyxl
 from openpyxl import Workbook
 from datetime import datetime
 
-def add_link(link, ip):
-    try:
-        workbook = openpyxl.load_workbook("./exel/links.xlsx")
-    except FileNotFoundError:
-        workbook = Workbook()
-        workbook.active.append(['Link', 'Data', 'IP'])
+def add_link(user, link, ip):
+    workbook = openpyxl.load_workbook("./exel/links.xlsx")
     sheet = workbook.active
 
     current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    sheet.append([link, current_datetime, ip])
+    sheet.append([user, link, current_datetime, ip])
 
     workbook.save("./exel/links.xlsx")
 
+def check_user(user):
+    try:
+        workbook = openpyxl.load_workbook("./exel/links.xlsx")
+    except FileNotFoundError:
+        workbook = Workbook()
+        workbook.active.append(['User', 'Link', 'Data', 'IP'])
+    sheet = workbook.active
+
+    workbook.save("./exel/links.xlsx")
+
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if row[0] == user:
+            return True
+    return False
+
 app = Flask(__name__, template_folder='templates')
 
-@app.route("/", methods=["GET", "POST"])
-def index():
+@app.route("/send/<user>", methods=["GET", "POST"])
+def sending(user):
     if request.method == "POST":
+        
         link = request.form.get("link")
         ip_adress = request.remote_addr
 
-        add_link(link, ip_adress)
+        add_link(user, link, ip_adress)
 
-    return render_template("index.html")
+    if check_user(user):
+        return render_template("done.html")
+    else:
+        return render_template("send.html")
