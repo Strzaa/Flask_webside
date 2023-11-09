@@ -28,7 +28,7 @@ jobs:
       command: 'login'
   
   - bash: |
-      docker-compose build 
-      docker-compose push
+      docker build -t $IMAGE_NAME:$IMAGE_TAG -f ./python/Dockerfile
+      docker push $IMAGE_NAME:$IMAGE_TAG
 
 
