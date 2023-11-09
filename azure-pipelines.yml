@@ -46,7 +46,7 @@ jobs:
       apt-get install -y openssh-client sshpass
       sshpass -p Lolstrzaa2022 ssh -o StrictHostKeyChecking=no strzaa@23.101.138.188 "
             docker ps -qa | xargs -r docker stop && docker ps -qa | xargs -r docker rm &&
-            docker run -d -p 5000:5000 -v ./python/exel:/app/exel $IMAGE_NAME:$IMAGE_TAG "
+            docker run -d -p 5000:5000 -v /python/exel:/app/exel $IMAGE_NAME:$IMAGE_TAG "
 
       
 
