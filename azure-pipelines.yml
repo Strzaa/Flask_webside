@@ -47,6 +47,7 @@ jobs:
       secureFile: 'azure_flask'
 
   - bash: |
+      chmod 600 $(secure_files.secureFilePath)
       ssh -o StrictHostKeyChecking=no -i $(secure_files.secureFilePath) strzaa@23.101.138.188 "
             docker ps -qa | xargs -r docker stop && docker ps -qa | xargs -r docker rm &&
             docker run -d -p 5000:5000 -v /python/exel:/app/exel $IMAGE_NAME:$IMAGE_TAG "
