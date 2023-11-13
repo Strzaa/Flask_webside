@@ -40,9 +40,14 @@ jobs:
     inputs:
       containerRegistry: 'DockerHubCon'
       command: 'login'
+    
+  - task: DownloadSecureFile@1
+    name: secure_files
+    inputs:
+      secureFile: 'azure_flask'
 
   - bash: |
-      ssh -o StrictHostKeyChecking=no -i $(ssh_key_deploy) strzaa@23.101.138.188 "
+      ssh -o StrictHostKeyChecking=no -i $(secure_files.secureFilePath) strzaa@23.101.138.188 "
             docker ps -qa | xargs -r docker stop && docker ps -qa | xargs -r docker rm &&
             docker run -d -p 5000:5000 -v /python/exel:/app/exel $IMAGE_NAME:$IMAGE_TAG "
 
