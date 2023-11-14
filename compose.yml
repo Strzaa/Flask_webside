@@ -1,0 +1,9 @@
+version: "3.3"
+
+services:
+  python:
+    image: strzaa/flask_webside:flaskApp
+    ports:
+      - 5000:5000
+    volumes:
+      - /python/exel:/app/exel
